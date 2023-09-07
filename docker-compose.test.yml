@@ -1,0 +1,21 @@
+version: '3.9'
+
+services:
+  redis:
+    image: redis
+    hostname: redis
+    restart: always
+    ports:
+      - "6379"
+    command: redis-server --loglevel warning
+    healthcheck:
+      test: redis-server --version
+  test:
+    depends_on:
+      redis:
+        condition: service_healthy
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: test
+

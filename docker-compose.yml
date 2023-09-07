@@ -44,3 +44,4 @@ services:
     hostname: weasyprint
     ports:
       - "8888"
+
