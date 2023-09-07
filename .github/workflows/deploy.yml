@@ -1,0 +1,16 @@
+name: DEPLOY
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy
+        env:
+          TOKEN: ${{ secrets.TOKEN }}
+        run: |
+          curl -X POST https://deploy.cloud.aplicativo.click/ -d '{"action": "deploy", "repository": "${{ github.repositoryUrl }}", "token": "${{ secrets.TOKEN }}"}'
+

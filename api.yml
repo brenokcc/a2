@@ -1,0 +1,66 @@
+api:
+  app: true
+  lang: pt-br
+  user:
+    change_password: change_password
+    verify_password: verify_password
+    resources: user_resources 
+  groups:
+    administrador: Administrador
+  models:
+    auth.group:
+      prefix: groups
+      search: name
+      fieldsets:
+        general_data: id, name
+      relations:
+        user_set:
+          fields: username, date_joined, is_staff, is_active
+          search: username
+      endpoints:
+        list:
+          fields: name
+          actions: add, view, edit, delete
+        view:
+          fields: general_data, user_set
+    auth.user:
+      prefix: users
+      search: username, groups__name
+      filters: groups, user_permissions, date_joined__gte, is_superuser, username
+      ordering: username
+      actions: list, add, view, edit, delete, change_password, change_passwords, verify_password
+      fieldsets:
+        general_data: username, first_name, last_name, get_full_name
+        access_data: date_joined, is_staff, is_active
+        contact_data: email
+      relations:
+        groups:
+          fields: id, name
+          actions: view
+        user_scopes:
+          fields: id, groupname, scopename, modelname, value
+          actions: view
+      endpoints:
+        add:
+          fields: first_name, last_name, username
+        edit:
+          fields: first_name, last_name, username, groups
+        list:
+          fields: id, general_data, access_data, groups
+          actions: add, view, edit, delete, change_password, change_passwords
+          extends:
+            active:
+              search: username
+              fields: username, date_joined
+            inactive:
+        view:
+          fields: general_data, access_data, groups, user_scopes
+          actions: verify_password, change_password
+          extends:
+            info: general_data, groups
+    api.scope:
+      prefix: scopes
+      endpoints:
+        list:
+          fields: id, groupname
+          actions: view, edit
